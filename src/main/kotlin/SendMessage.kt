@@ -3,7 +3,6 @@ package agents
 import jade.core.AID
 import jade.core.behaviours.TickerBehaviour
 import jade.lang.acl.ACLMessage
-import java.lang.Exception
 
 
 class GettingMessageException(override val message: String): Exception(message)
@@ -11,7 +10,10 @@ class GettingMessageException(override val message: String): Exception(message)
 
 class SendMessage(private val agent: DefaultAgent, period: Long): TickerBehaviour(agent, period) {
     override fun onTick() {
-        println("Collection state: ${agent.collectedData.size.toFloat() / AGENTS_COUNT}, mts: ${agent.messagesToSend}")
+        println(
+            "Agent '${agent.localName}', collection: ${agent.collectedData.size.toFloat() / AGENTS_COUNT}," +
+                    " mts: ${agent.messagesToSend}"
+        )
         if (agent.messagesToSend.isNotEmpty()) {
             val message = agent.messagesToSend.pop()
             agent.linkedAgents.forEach { linkedAgent ->
