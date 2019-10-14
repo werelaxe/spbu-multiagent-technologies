@@ -57,8 +57,7 @@ class DefaultAgent: Agent() {
         init {
             for (i in 1..AGENTS_COUNT) {
                 val next = ((i % AGENTS_COUNT) + 1)
-                val prev = ((i - 2 + AGENTS_COUNT) % AGENTS_COUNT + 1)
-                val linkedAgents = mutableSetOf(next, prev)
+                val linkedAgents = mutableSetOf(next)
                 linkedAgentsById[i.toString()] = linkedAgents.map { it.toString() }.toMutableSet()
                 for (j in 1..3) {
                     linkedAgentsById[i.toString()]?.add(Random.nextInt(1, AGENTS_COUNT + 1).toString())
