@@ -11,16 +11,12 @@ import kotlin.system.exitProcess
 class DefaultAgent: Agent() {
     val linkedAgents = mutableSetOf<String>()
     var parent: String? = null
-    var received = 0
-    private val value = Random.nextInt(0, 10)
+    private val value = Random.nextInt(0, 100)
     var result = value
     private val leader
         get() = localName == LEADER_ID
 
     override fun setup() {
-        if (leader) {
-            received--
-        }
         val id = aid.localName
         linkedAgents.addAll(linkedAgentsById[id] ?: throw Exception("Wrong agent id"))
         println("Agent $localName has been registered, value: $value, linked: $linkedAgents")

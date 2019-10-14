@@ -24,9 +24,7 @@ class ReceiveMessage(private val agent: DefaultAgent): CyclicBehaviour(agent) {
                 agent.nextStep()
             } else {
                 agent.prn("Receive a new value $value from ${message.sender.localName}")
-                agent.received++
                 agent.result += value
-                agent.prn("Received: ${agent.received}")
                 agent.nextStep()
             }
             block()
