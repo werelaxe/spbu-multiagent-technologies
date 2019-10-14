@@ -1,34 +1,57 @@
 package agents
 
+import jade.core.AID
 import jade.core.Agent
-import java.util.*
-import java.util.concurrent.TimeUnit
+import jade.lang.acl.ACLMessage
+import java.lang.Exception
 import kotlin.random.Random
+import kotlin.system.exitProcess
 
 
 class DefaultAgent: Agent() {
     val linkedAgents = mutableSetOf<String>()
-    val messagesToSend = ArrayDeque<String>()
-    val collectedData = hashMapOf<Int, Int>()
-    val result: Float
-        get() = collectedData.map { it.value }.sum().toFloat() / collectedData.size
-    private val value = Random.nextInt(0, 100)
-    private val message: String
-        get() = "$localName:$value"
+    var parent: String? = null
+    var received = 0
+    private val value = Random.nextInt(0, 10)
+    var result = value
+    val leader
+        get() = localName == LEADER_ID
 
     override fun setup() {
-        val id = aid.localName.toInt()
-        linkedAgents.add((id % AGENTS_COUNT + 1).toString())
-        for (i in 0..3) {
-            val linkedId = Random.nextInt(AGENTS_COUNT) + 1
-            if (linkedId != id) {
-                linkedAgents.add(linkedId.toString())
-            }
+        if (leader) {
+            received--
         }
-        messagesToSend.push(message)
-        collectedData[id] = value
-        println("Agent with name='$localName' has been registered: $localName: $linkedAgents")
-        addBehaviour(SendMessage(this, TimeUnit.MILLISECONDS.toMillis(100)))
+        val id = aid.localName
+        linkedAgents.addAll(linkedAgentsById[id] ?: throw Exception("!"))
+        println("Agent $localName has been registered, value: $value, linked: $linkedAgents")
+        addBehaviour(SendMessage(this))
         addBehaviour(ReceiveMessage(this))
+    }
+
+    fun sendMessage(message: String, receiverId: String) {
+        val msg = ACLMessage(ACLMessage.INFORM)
+        val dest = AID(receiverId, false)
+        msg.content = message
+        msg.addReceiver(dest)
+        send(msg)
+    }
+
+    fun prn(message: String) {
+        println("$localName: $message")
+    }
+
+    fun nextStep() {
+        if (linkedAgents.isEmpty()) {
+            if (leader) {
+                prn("I'm a leader! Result: $result")
+                exitProcess(0)
+            } else {
+                sendMessage("Response:$result", parent!!)
+            }
+        } else {
+            val newReceiver = linkedAgents.first()
+            linkedAgents.remove(newReceiver)
+            sendMessage("Request:0", newReceiver)
+        }
     }
 }

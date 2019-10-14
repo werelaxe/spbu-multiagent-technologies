@@ -7,12 +7,27 @@ class ReceiveMessage(private val agent: DefaultAgent): CyclicBehaviour(agent) {
     override fun action() {
         val message: ACLMessage? = agent.receive()
         message?.let {
-            val (id, value) = message.content.split(":").map { it.toInt() }
-            println("Receive: id=$id, value=$value")
-            if (id !in agent.collectedData) {
-                println("Add a new value: $id, $value")
-                agent.collectedData[id] = value
-                agent.messagesToSend.push(message.content)
+            agent.prn("Received message: '${message.content}' from ${message.sender.localName}")
+            val (rawMsgType, rawValue) = message.content.split(":")
+            val value = rawValue.toInt()
+            val msgType = MessageType.valueOf(rawMsgType)
+            if (msgType == MessageType.Request) {
+                agent.parent?.let {
+                    agent.prn("I'm already in progress, Response:0 to ${message.sender.localName}")
+                    agent.sendMessage("Response:0", message.sender.localName)
+                    block()
+                    return
+                }
+                agent.parent = message.sender.localName
+                agent.linkedAgents.remove(message.sender.localName)
+                println("Parent of ${agent.localName} is ${message.sender.localName}")
+                agent.nextStep()
+            } else {
+                agent.prn("Receive a new value $value from ${message.sender.localName}")
+                agent.received++
+                agent.result += value
+                agent.prn("Received: ${agent.received}")
+                agent.nextStep()
             }
             block()
         }
