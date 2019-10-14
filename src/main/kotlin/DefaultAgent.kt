@@ -13,7 +13,7 @@ class DefaultAgent: Agent() {
     var parent: String? = null
     private val value = Random.nextInt(0, 100)
     var result = value
-    private val leader
+    val leader
         get() = localName == LEADER_ID
 
     override fun setup() {
