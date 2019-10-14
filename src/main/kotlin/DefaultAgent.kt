@@ -39,7 +39,7 @@ class DefaultAgent: Agent() {
     fun nextStep() {
         if (linkedAgents.isEmpty()) {
             if (leader) {
-                prn("I'm a leader! Result: ${result / AGENTS_COUNT}")
+                prn("I'm a leader! Result: ${result.toFloat() / AGENTS_COUNT}")
                 exitProcess(0)
             } else {
                 sendMessage("Response:$result", parent ?: throw Exception("Parent can not be null"))
