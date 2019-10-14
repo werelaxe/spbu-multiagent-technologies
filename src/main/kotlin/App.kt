@@ -8,7 +8,7 @@ import kotlin.random.Random
 import kotlin.system.exitProcess
 
 
-const val AGENTS_COUNT = 5
+const val AGENTS_COUNT = 10
 const val LEADER_ID = "1"
 
 enum class MessageType {
@@ -16,19 +16,7 @@ enum class MessageType {
 }
 
 
-val linkedAgentsById = mutableMapOf<String, MutableSet<String>>()
-
-
 fun main() {
-    for (i in 1..AGENTS_COUNT) {
-        val next = ((i % AGENTS_COUNT) + 1)
-        val prev = ((i - 2 + AGENTS_COUNT) % AGENTS_COUNT + 1)
-        val linkedAgents = mutableSetOf(next, prev)
-        linkedAgentsById[i.toString()] = linkedAgents.map { it.toString() }.toMutableSet()
-    }
-    linkedAgentsById["1"]!!.add("3")
-    linkedAgentsById["3"]!!.add("1")
-
     val runtime = Runtime.instance()
     val profile = ProfileImpl()
     profile.setParameter(Profile.MAIN_HOST, "localhost")

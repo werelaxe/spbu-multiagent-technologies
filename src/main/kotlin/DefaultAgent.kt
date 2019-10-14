@@ -14,7 +14,7 @@ class DefaultAgent: Agent() {
     var received = 0
     private val value = Random.nextInt(0, 10)
     var result = value
-    val leader
+    private val leader
         get() = localName == LEADER_ID
 
     override fun setup() {
@@ -22,7 +22,7 @@ class DefaultAgent: Agent() {
             received--
         }
         val id = aid.localName
-        linkedAgents.addAll(linkedAgentsById[id] ?: throw Exception("!"))
+        linkedAgents.addAll(linkedAgentsById[id] ?: throw Exception("Wrong agent id"))
         println("Agent $localName has been registered, value: $value, linked: $linkedAgents")
         addBehaviour(SendMessage(this))
         addBehaviour(ReceiveMessage(this))
@@ -43,15 +43,36 @@ class DefaultAgent: Agent() {
     fun nextStep() {
         if (linkedAgents.isEmpty()) {
             if (leader) {
-                prn("I'm a leader! Result: $result")
+                prn("I'm a leader! Result: ${result / AGENTS_COUNT}")
                 exitProcess(0)
             } else {
-                sendMessage("Response:$result", parent!!)
+                sendMessage("Response:$result", parent ?: throw Exception("Parent can not be null"))
             }
         } else {
             val newReceiver = linkedAgents.first()
             linkedAgents.remove(newReceiver)
             sendMessage("Request:0", newReceiver)
+        }
+    }
+
+    companion object {
+        val linkedAgentsById = mutableMapOf<String, MutableSet<String>>()
+
+        init {
+            for (i in 1..AGENTS_COUNT) {
+                val next = ((i % AGENTS_COUNT) + 1)
+                val prev = ((i - 2 + AGENTS_COUNT) % AGENTS_COUNT + 1)
+                val linkedAgents = mutableSetOf(next, prev)
+                linkedAgentsById[i.toString()] = linkedAgents.map { it.toString() }.toMutableSet()
+                for (j in 1..3) {
+                    linkedAgentsById[i.toString()]?.add(Random.nextInt(1, AGENTS_COUNT + 1).toString())
+                        ?: throw Exception("Incorrect id: $i")
+                }
+            }
+            for (i in 1..AGENTS_COUNT) {
+                linkedAgentsById[i.toString()]?.remove(i.toString())
+                    ?: throw Exception("Incorrect id: $i")
+            }
         }
     }
 }
