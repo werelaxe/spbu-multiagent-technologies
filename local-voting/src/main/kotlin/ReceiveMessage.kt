@@ -20,7 +20,7 @@ class ReceiveMessage(private val agent: DefaultAgent): CyclicBehaviour(agent) {
                     exitProcess(0)
                 }
             }
-            agent.result = (agent.result + linkedValue) / 2f
+            agent.result += (linkedValue - agent.result) / 2f
             for (linkedAgent in agent.linkedAgents) {
                 agent.sendMessageViaEnvironment(agent.result.toString(), linkedAgent)
             }

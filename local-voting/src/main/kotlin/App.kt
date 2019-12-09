@@ -3,9 +3,6 @@ package agents
 import jade.core.Profile
 import jade.core.ProfileImpl
 import jade.core.Runtime
-import java.lang.Exception
-import kotlin.random.Random
-import kotlin.system.exitProcess
 
 
 const val AGENTS_COUNT = 10
