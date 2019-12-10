@@ -18,6 +18,7 @@ class DefaultAgent: Agent() {
         println("Agent $localName has been registered, value: $value, linked: $linkedAgents")
         values.add(value)
         addBehaviour(SendMessage(this))
+        addBehaviour(TickSendingBehavior(this, COMMON_DELAY))
         addBehaviour(ReceiveMessage(this))
     }
 

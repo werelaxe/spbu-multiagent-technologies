@@ -10,7 +10,7 @@ class ReceiveMessage(private val agent: DefaultAgent): CyclicBehaviour(agent) {
         val message: ACLMessage? = agent.receive()
         message?.let {
             agent.count++
-//            agent.prn("Received message: '${message.content}' from ${message.sender.localName}")
+            agent.prn("Received message: '${message.content}' from ${message.sender.localName}")
             val linkedValue = message.content.toFloat()
 
             if (agent.count >= ITERATIONS_COUNT) {
@@ -20,10 +20,7 @@ class ReceiveMessage(private val agent: DefaultAgent): CyclicBehaviour(agent) {
                     exitProcess(0)
                 }
             }
-            agent.result += (linkedValue - agent.result) / 2f
-            for (linkedAgent in agent.linkedAgents) {
-                agent.sendMessageViaEnvironment(agent.result.toString(), linkedAgent)
-            }
+            agent.result += (linkedValue - agent.result) * ALPHA
             block()
         }
     }

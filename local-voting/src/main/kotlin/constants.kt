@@ -1,5 +1,6 @@
 package agents
 
+const val ALPHA = 0.5f
 const val AGENTS_COUNT = 10
 const val LEADER_ID = "1"
 const val ITERATIONS_COUNT = 100
@@ -11,3 +12,5 @@ const val VALUES_LOWER_BOUND = 0
 const val VALUES_UPPER_BOUND = 100
 
 const val LINKED_AGENTS_COUNT = 3
+
+const val COMMON_DELAY: Long = 100
