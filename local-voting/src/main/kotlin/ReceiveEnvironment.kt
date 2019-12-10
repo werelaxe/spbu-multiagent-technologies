@@ -11,9 +11,9 @@ class ReceiveEnvironment(private val agent: EnvironmentAgent): CyclicBehaviour(a
             val (receiverId, messageContent) = message.content.split(":")
             val noisedValue = ((messageContent.toFloat() + (Random.nextFloat() - 0.5) * NOISE_SCALE)).toString()
             if (Random.nextFloat() > LOOSING_PACKAGE_PROBABILITY) {
-                if (Random.nextFloat() < 0.1) {
+                if (Random.nextFloat() < EXTRA_DELAY_PROBABILITY) {
                     Thread {
-                        Thread.sleep(COMMON_DELAY * 2)
+                        Thread.sleep(COMMON_DELAY * EXTRA_DELAY_SCALE)
                         agent.sendMessage(noisedValue, receiverId)
                     }
                         .start()
