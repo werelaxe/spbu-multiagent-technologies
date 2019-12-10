@@ -5,10 +5,6 @@ import jade.core.ProfileImpl
 import jade.core.Runtime
 
 
-const val AGENTS_COUNT = 10
-const val LEADER_ID = "1"
-const val ITERATIONS_COUNT = 100
-const val ENVIRONMENT_ID = "environment"
 val values = mutableListOf<Float>()
 
 

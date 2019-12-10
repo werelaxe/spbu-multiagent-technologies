@@ -9,8 +9,8 @@ class ReceiveEnvironment(private val agent: EnvironmentAgent): CyclicBehaviour(a
         val message: ACLMessage? = agent.receive()
         message?.let {
             val (receiverId, messageContent) = message.content.split(":")
-            val noisedValue = ((messageContent.toFloat() + (Random.nextFloat() - 0.5) * 10)).toString()
-            if (Random.nextFloat() > 0.1) {
+            val noisedValue = ((messageContent.toFloat() + (Random.nextFloat() - 0.5) * NOISE_SCALE)).toString()
+            if (Random.nextFloat() > LOOSING_PACKAGE_PROBABILITY) {
                 agent.sendMessage(noisedValue, receiverId)
             }
             block()

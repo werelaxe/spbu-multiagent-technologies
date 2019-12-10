@@ -7,7 +7,7 @@ import kotlin.random.Random
 class DefaultAgent: Agent() {
     val linkedAgents = mutableSetOf<String>()
     var count = 0
-    private val value = Random.nextInt(0, 100).toFloat()
+    private val value = Random.nextInt(VALUES_LOWER_BOUND, VALUES_UPPER_BOUND).toFloat()
     var result = value
     val leader
         get() = localName == LEADER_ID
@@ -33,7 +33,7 @@ class DefaultAgent: Agent() {
                 val next = ((i % AGENTS_COUNT) + 1)
                 val linkedAgents = mutableSetOf(next)
                 linkedAgentsById[i.toString()] = linkedAgents.map { it.toString() }.toMutableSet()
-                for (j in 1..3) {
+                for (j in 1..LINKED_AGENTS_COUNT) {
                     linkedAgentsById[i.toString()]?.add(Random.nextInt(1, AGENTS_COUNT + 1).toString())
                         ?: throw Exception("Incorrect id: $i")
                 }
